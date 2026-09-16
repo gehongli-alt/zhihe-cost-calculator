@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="知禾·新加坡升学笔记｜新加坡教育费用计算器">
+<title>知禾｜新加坡教育费用计算器</title>
+<style>
+:root{
+  --bg:#f6f7f8; --card:#ffffff; --text:#172033; --muted:#667085;
+  --border:#dde2e8; --navy:#173b69; --navy2:#eaf0f7; --soft:#f1f4f7;
+  --green:#2d6a4f; --amber:#8a5a12;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",
+  "Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+.wrap{max-width:980px;margin:0 auto;padding:22px 14px 54px}
+.hero{padding:10px 2px 8px}
+.brand{font-size:13px;color:var(--navy);font-weight:700;letter-spacing:.08em}
+h1{font-size:30px;line-height:1.25;margin:9px 0 8px}
+.lead{font-size:14px;line-height:1.8;color:var(--muted);max-width:780px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{font-size:12px;padding:6px 9px;border-radius:999px;background:var(--navy2);color:var(--navy)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin:14px 0}
+.card h2{font-size:17px;margin:0 0 14px}
+.card h3{font-size:14px;margin:16px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+label{display:block;font-size:13px;font-weight:650}
+input,select{
+  width:100%;min-height:44px;margin-top:7px;border:1px solid var(--border);
+  border-radius:12px;padding:10px 12px;background:#fff;font-size:16px;color:var(--text)
+}
+input:focus,select:focus{outline:2px solid #adc1da;outline-offset:1px}
+.note{background:var(--soft);border-radius:12px;padding:12px;font-size:13px;line-height:1.7;color:var(--muted)}
+.info{background:#f7fafc;border-left:3px solid var(--navy);padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.7;color:var(--muted)}
+.check{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:550}
+.check input{width:20px;min-height:20px;margin:0}
+.hidden{display:none!important}
+.result{background:#eef2f6;border:1px solid #d5dde6;border-radius:20px;padding:20px;margin-top:16px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px}
+.k{font-size:12px;color:var(--muted)}
+.v{font-size:22px;font-weight:800;margin-top:5px;line-height:1.25}
+.big{font-size:26px}
+.break{border-top:1px solid var(--border);margin-top:18px;padding-top:16px}
+.row{display:flex;justify-content:space-between;gap:16px;padding:6px 0;font-size:14px}
+small{color:var(--muted)}
+button{
+  min-height:44px;border-radius:12px;border:1px solid var(--border);
+  background:#fff;font-size:14px;font-weight:750;cursor:pointer;padding:0 14px
+}
+button.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.compare-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:760px;background:#fff}
+th,td{padding:11px 10px;text-align:right;border-bottom:1px solid var(--border);font-size:13px}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fff}
+th{background:#f7f8fa;color:var(--muted);font-weight:700}
+td strong{font-size:14px}
+.route-input{width:120px;min-height:38px;font-size:14px;margin:0;text-align:right}
+.footer{font-size:12px;color:var(--muted);line-height:1.8;margin-top:14px}
+.pct{display:inline-block;width:42px;text-align:right;color:var(--muted)}
+.sep{height:1px;background:var(--border);margin:16px 0}
+details{border-top:1px solid var(--border);padding-top:12px;margin-top:14px}
+summary{cursor:pointer;font-weight:700;font-size:14px}
+.source{font-size:12px;line-height:1.7;color:var(--muted)}
+@media(max-width:760px){
+  h1{font-size:24px}
+  .grid,.grid3,.grid4,.stats{grid-template-columns:1fr}
+  .card{padding:15px}
+  .v,.big{font-size:22px}
+}
+@media print{
+  body{background:#fff}
+  .actions,.edit-only{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .card,.result{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="hero">
+    <div class="brand">知禾 · 新加坡升学笔记</div>
+    <h1>来新加坡读书，到底要花多少钱？</h1>
+    <div class="lead">
+      不只算学费。把住宿、生活、培训、签证、陪读和一次性安置费用一起算进去，
+      同时比较不同教育路径的 <b>1年预算</b> 和 <b>3年预算</b>。
+    </div>
+    <div class="badges">
+      <span class="badge">2026参考版</span>
+      <span class="badge">政府学校官方费用已核对</span>
+      <span class="badge">其他机构费用可自行修改</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>① 先选你最想测算的路径</h2>
+    <div class="grid">
+      <label>主要教育路径
+        <select id="route">
+          <option value="gov_primary">政府小学｜非ASEAN国际学生</option>
+          <option value="gov_secondary" selected>政府中学｜非ASEAN国际学生</option>
+          <option value="aeis">AEIS备考 / 等成绩 / 过渡期</option>
+          <option value="transition">过渡学校 / 课程</option>
+          <option value="private">私立学校</option>
+          <option value="international">国际学校</option>
+          <option value="custom">其他 / 自定义</option>
+        </select>
+      </label>
+      <label>这条路径的学校/课程固定费用（月均，S$）
+        <input id="tuition" type="number" min="0" step="0.01" value="2211.8">
+      </label>
+    </div>
+    <div class="note" id="route-note" style="margin-top:14px">
+      2026年普通政府/政府资助中学：非ASEAN国际学生学费 S$2,190/月，杂费约 S$21.80/月，合计 S$2,211.80/月。
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <label>学校/课程申请、注册等一次性费用（S$）
+        <input id="school-onetime" type="number" min="0" value="0">
+      </label>
+      <label>每年额外学校费用（校服、教材、活动等，S$）
+        <input id="school-annual" type="number" min="0" value="600">
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>② 住宿与家庭安排</h2>
+    <div class="grid">
+      <label>住宿方式
+        <select id="housing-preset">
+          <option value="1800">学生寄宿 / 含管理｜示例 S$1,800/月</option>
+          <option value="1400">单独租房间｜示例 S$1,400/月</option>
+          <option value="2200">家长+孩子租房间/套间｜示例 S$2,200/月</option>
+          <option value="3500">家长+孩子整租住房｜示例 S$3,500/月</option>
+          <option value="0">住亲友家 / 其他</option>
+        </select>
+      </label>
+      <label>实际住房费用 / 月（S$）
+        <input id="housing" type="number" min="0" step="10" value="1800">
+      </label>
+    </div>
+
+    <div style="margin-top:16px">
+      <label class="check"><input id="parent" type="checkbox">一位家长长期在新加坡陪读 / 陪伴</label>
+    </div>
+
+    <div id="parent-box" class="grid hidden" style="margin-top:14px">
+      <label>家长额外生活支出 / 月（不含住房，S$）
+        <input id="parent-living" type="number" min="0" value="900">
+      </label>
+      <label>家长每年往返中国交通等（S$）
+        <input id="parent-travel" type="number" min="0" value="1200">
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>③ 孩子每月生活与学习支出</h2>
+    <div class="grid3">
+      <label>餐饮（S$）<input id="food" type="number" min="0" value="550"></label>
+      <label>交通（S$）<input id="transport" type="number" min="0" value="100"></label>
+      <label>补习 / 培训（S$）<input id="tutoring" type="number" min="0" value="500"></label>
+      <label>保险 / 医疗（S$）<input id="medical" type="number" min="0" value="80"></label>
+      <label>手机 / 日用品 / 娱乐（S$）<input id="misc" type="number" min="0" value="180"></label>
+      <label>其他固定支出（S$）<input id="other-monthly" type="number" min="0" value="0"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>④ 第一年一次性支出</h2>
+    <div class="grid3">
+      <label>学生准证 / 签证（S$）
+        <input id="visa" type="number" min="0" value="135">
+      </label>
+      <label>考试 / 报名等（S$）
+        <input id="application" type="number" min="0" value="0">
+      </label>
+      <label>机票 + 初到安置（S$）
+        <input id="setup" type="number" min="0" value="1200">
+      </label>
+      <label>住房押金等（S$）
+        <input id="deposit" type="number" min="0" value="1800">
+      </label>
+      <label>电脑 / 设备（S$）
+        <input id="device" type="number" min="0" value="800">
+      </label>
+      <label>其他一次性支出（S$）
+        <input id="other-onetime" type="number" min="0" value="0">
+      </label>
+    </div>
+    <div class="info" style="margin-top:14px">
+      学生准证示例 S$135 = 申请费 S$45 + 签发费 S$60 + 如适用的多次入境签证 S$30。
+      实际是否产生全部费用，以ICA个案为准。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>⑤ 给预算留一点余量</h2>
+    <div class="grid">
+      <label>预算安全垫
+        <select id="buffer">
+          <option value="0">0%｜只看理论预算</option>
+          <option value="0.10" selected>10%｜建议最低预留</option>
+          <option value="0.15">15%｜更稳妥</option>
+          <option value="0.20">20%｜保守预算</option>
+        </select>
+      </label>
+      <label>1新币≈人民币
+        <input id="fx" type="number" min="0.1" max="20" step="0.01" value="5.27">
+      </label>
+    </div>
+    <div class="footer">汇率只是展示用参数，请按使用当天的实际汇率自行调整。</div>
+  </section>
+
+  <section class="result" aria-live="polite">
+    <div class="stats">
+      <div class="stat"><div class="k">月度经常性支出</div><div class="v" id="monthly-sgd">—</div></div>
+      <div class="stat"><div class="k">第一年预算</div><div class="v big" id="year1-sgd">—</div><small id="year1-cny">—</small></div>
+      <div class="stat"><div class="k">3年预算</div><div class="v big" id="year3-sgd">—</div><small id="year3-cny">—</small></div>
+      <div class="stat"><div class="k">建议准备资金</div><div class="v big" id="safe-sgd">—</div><small id="safe-cny">含安全垫</small></div>
+    </div>
+
+    <div class="break">
+      <b>第一年，钱主要花在哪里？</b>
+      <div id="breakdown" style="margin-top:8px"></div>
+    </div>
+
+    <div class="note" id="warning" style="margin-top:14px"></div>
+
+    <div class="actions edit-only" style="margin-top:14px">
+      <button type="button" class="primary" id="print">打印 / 保存PDF结果</button>
+      <button type="button" id="reset">恢复示例值</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>⑥ 一眼比较：不同教育路径的1年 / 3年总成本</h2>
+    <div class="lead" style="margin-bottom:12px">
+      下表共用你上面填写的住宿、生活、补习和家庭安排，只替换不同路径的学校/课程费用。
+      政府学校采用2026公开费用；其他路线是<b>可编辑示例值</b>，请换成目标机构真实报价。
+    </div>
+
+    <div class="compare-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>教育路径</th>
+            <th>学校/课程月费</th>
+            <th>一次性学校费</th>
+            <th>第1年总成本</th>
+            <th>3年总成本</th>
+          </tr>
+        </thead>
+        <tbody id="compare-body">
+          <tr data-key="gov_primary">
+            <td><strong>政府小学</strong><br><small>非ASEAN国际学生</small></td>
+            <td><input class="route-input cmp-monthly" value="998" type="number" min="0"></td>
+            <td><input class="route-input cmp-one" value="0" type="number" min="0"></td>
+            <td class="cmp-y1">—</td><td class="cmp-y3">—</td>
+          </tr>
+          <tr data-key="gov_secondary">
+            <td><strong>政府中学</strong><br><small>非ASEAN国际学生</small></td>
+            <td><input class="route-input cmp-monthly" value="2211.8" type="number" min="0"></td>
+            <td><input class="route-input cmp-one" value="0" type="number" min="0"></td>
+            <td class="cmp-y1">—</td><td class="cmp-y3">—</td>
+          </tr>
+          <tr data-key="aeis">
+            <td><strong>AEIS备考 / 过渡</strong><br><small>请改为实际课程报价</small></td>
+            <td><input class="route-input cmp-monthly" value="1600" type="number" min="0"></td>
+            <td><input class="route-input cmp-one" value="500" type="number" min="0"></td>
+            <td class="cmp-y1">—</td><td class="cmp-y3">—</td>
+          </tr>
+          <tr data-key="transition">
+            <td><strong>过渡学校 / 课程</strong><br><small>请改为目标机构报价</small></td>
+            <td><input class="route-input cmp-monthly" value="2200" type="number" min="0"></td>
+            <td><input class="route-input cmp-one" value="1000" type="number" min="0"></td>
+            <td class="cmp-y1">—</td><td class="cmp-y3">—</td>
+          </tr>
+          <tr data-key="private">
+            <td><strong>私立学校</strong><br><small>请改为目标学校报价</small></td>
+            <td><input class="route-input cmp-monthly" value="2500" type="number" min="0"></td>
+            <td><input class="route-input cmp-one" value="1500" type="number" min="0"></td>
+            <td class="cmp-y1">—</td><td class="cmp-y3">—</td>
+          </tr>
+          <tr data-key="international">
+            <td><strong>国际学校</strong><br><small>请改为目标学校报价</small></td>
+            <td><input class="route-input cmp-monthly" value="3600" type="number" min="0"></td>
+            <td><input class="route-input cmp-one" value="4000" type="number" min="0"></td>
+            <td class="cmp-y1">—</td><td class="cmp-y3">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info" style="margin-top:14px">
+      注意：这不是“哪条路径更划算”的结论。不同路线对应的招生门槛、课程体系、时间成本和升学出口不同，
+      成本只是家庭决策中的一个维度。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>⑦ 容易漏掉的成本</h2>
+    <div class="grid">
+      <div class="note"><b>时间成本</b><br>AEIS反复备考、等待成绩或转换学校，可能带来半年至一年的时间成本。</div>
+      <div class="note"><b>家长机会成本</b><br>陪读家长如果暂停工作，损失的收入可能远高于生活费本身。</div>
+      <div class="note"><b>补习成本</b><br>进入政府学校以后，英语、科学语言和部分学科仍可能需要补习。</div>
+      <div class="note"><b>换路线成本</b><br>报名费、注册费、押金、校服教材等在转换学校时可能重复发生。</div>
+    </div>
+  </section>
+
+  <details class="card">
+    <summary>数据口径与说明</summary>
+    <div class="source" style="margin-top:12px">
+      <b>政府小学：</b>2026年普通政府/政府资助小学，非ASEAN国际学生参考为学费 S$985/月 + 杂费 S$13/月 = S$998/月。<br>
+      <b>政府中学：</b>2026年普通政府/政府资助中学，非ASEAN国际学生参考为学费 S$2,190/月 + 杂费约 S$21.80/月 = S$2,211.80/月。<br>
+      <b>学生准证：</b>ICA目前列示申请费 S$45、签发费 S$60；如适用，多次入境签证 S$30。<br>
+      <b>其他路径：</b>AEIS培训、过渡课程、私立学校、国际学校、住宿和补习费用差异很大，本工具仅放置可编辑示例值，不代表市场平均价或任何机构正式报价。<br>
+      <b>重要：</b>政策和价格会变化，正式做升学决策前应重新核对学校、MOE、ICA和具体机构的最新信息。
+    </div>
+  </details>
+
+  <div class="footer">
+    本工具用于家庭教育预算和路径比较，不构成学校录取、签证、教育或财务建议。<br>
+    © 知禾 · 新加坡升学笔记
+  </div>
+</div>
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const root=$('app');
+
+ const presets={
+  gov_primary:{
+    tuition:998, schoolAnnual:600, schoolOne:0,
+    note:'2026年普通政府/政府资助小学：非ASEAN国际学生学费 S$985/月 + 杂费 S$13/月，合计 S$998/月。'
+  },
+  gov_secondary:{
+    tuition:2211.8, schoolAnnual:600, schoolOne:0,
+    note:'2026年普通政府/政府资助中学：非ASEAN国际学生学费 S$2,190/月 + 杂费约 S$21.80/月，合计 S$2,211.80/月。'
+  },
+  aeis:{
+    tuition:1600, schoolAnnual:300, schoolOne:500,
+    note:'AEIS培训和过渡课程收费差异较大；这里仅为示例值，请替换成你实际咨询到的课程报价。'
+  },
+  transition:{
+    tuition:2200, schoolAnnual:600, schoolOne:1000,
+    note:'过渡学校/课程收费与包含项目差异很大；请填写目标学校或机构的正式报价。'
+  },
+  private:{
+    tuition:2500, schoolAnnual:1000, schoolOne:1500,
+    note:'私立学校收费跨度较大；请把月费、注册费及每年额外费用替换成目标学校正式报价。'
+  },
+  international:{
+    tuition:3600, schoolAnnual:2500, schoolOne:4000,
+    note:'国际学校收费差异很大，且可能另有申请费、注册费、设施费等；请按具体学校报价修改。'
+  },
+  custom:{
+    tuition:0, schoolAnnual:0, schoolOne:0,
+    note:'自定义模式：请自行填写学校/课程固定费用、一次性费用和每年额外费用。'
+  }
+ };
+
+ function n(id){
+   const el=$(id); let v=Number(el.value);
+   return Number.isFinite(v)&&v>=0?v:0;
+ }
+ function num(el){
+   let v=Number(el.value); return Number.isFinite(v)&&v>=0?v:0;
+ }
+ function sgd(v, d=0){
+   return 'S$'+v.toLocaleString('en-SG',{maximumFractionDigits:d,minimumFractionDigits:d});
+ }
+ function cny(v){
+   return '¥'+v.toLocaleString('zh-CN',{maximumFractionDigits:0});
+ }
+
+ function recurringAnnualExTuition(){
+   return (n('housing')+n('food')+n('transport')+n('tutoring')+n('medical')+
+     n('misc')+n('other-monthly')+($('parent').checked?n('parent-living'):0))*12
+     + ($('parent').checked?n('parent-travel'):0);
+ }
+
+ function commonFirstYearOneTime(){
+   return n('visa')+n('application')+n('setup')+n('deposit')+n('device')+n('other-onetime');
+ }
+
+ function currentCosts(){
+   const tuitionAnnual=n('tuition')*12;
+   const annualSchool=n('school-annual');
+   const schoolOne=n('school-onetime');
+   const recurringOther=recurringAnnualExTuition();
+   const commonOne=commonFirstYearOneTime();
+   const baseYear1=tuitionAnnual+annualSchool+schoolOne+recurringOther+commonOne;
+   const baseYear3=(tuitionAnnual+annualSchool+recurringOther)*3+schoolOne+commonOne;
+   return {tuitionAnnual,annualSchool,schoolOne,recurringOther,commonOne,baseYear1,baseYear3};
+ }
+
+ function calc(){
+   const c=currentCosts();
+   const fx=Math.max(.1,n('fx')||5.27);
+   const buffer=Math.max(0,Number($('buffer').value)||0);
+   const monthly=n('tuition')+n('housing')+n('food')+n('transport')+n('tutoring')+
+     n('medical')+n('misc')+n('other-monthly')+($('parent').checked?n('parent-living'):0);
+   const safe=c.baseYear1*(1+buffer);
+
+   $('monthly-sgd').textContent=sgd(monthly);
+   $('year1-sgd').textContent=sgd(c.baseYear1);
+   $('year1-cny').textContent='约 '+cny(c.baseYear1*fx);
+   $('year3-sgd').textContent=sgd(c.baseYear3);
+   $('year3-cny').textContent='约 '+cny(c.baseYear3*fx);
+   $('safe-sgd').textContent=sgd(safe);
+   $('safe-cny').textContent='约 '+cny(safe*fx)+'（第1年）';
+
+   const groups=[
+     ['学校/课程费',c.tuitionAnnual+c.annualSchool+c.schoolOne],
+     ['住宿',n('housing')*12],
+     ['孩子日常生活',(n('food')+n('transport')+n('medical')+n('misc'))*12],
+     ['补习/培训',n('tutoring')*12],
+     ['家长陪读相关',$('parent').checked?(n('parent-living')*12+n('parent-travel')):0],
+     ['其他每月支出',n('other-monthly')*12],
+     ['签证/安置等一次性支出',c.commonOne]
+   ].filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+
+   $('breakdown').innerHTML=groups.map(([k,v])=>{
+      const p=c.baseYear1?Math.round(v/c.baseYear1*100):0;
+      return '<div class="row"><span>'+k+' <span class="pct">'+p+'%</span></span><b>'+sgd(v)+'</b></div>';
+   }).join('');
+
+   let msg='按当前输入，第一年基础预算约 '+sgd(c.baseYear1)+'。';
+   if(buffer>0) msg+=' 加 '+Math.round(buffer*100)+'% 安全垫后，建议至少准备 '+sgd(safe)+'。';
+   if($('parent').checked) msg+=' 当前已计入一位家长的日常生活和年度往返支出，但尚未计入家长暂停工作的收入机会成本。';
+   if(['aeis','transition','private','international'].includes($('route').value)){
+      msg+=' 你选择的学校/课程费用属于可编辑示例值，正式使用前请替换为实际报价。';
+   }
+   $('warning').textContent=msg;
+
+   calcCompare();
+ }
+
+ function calcCompare(){
+   const fx=Math.max(.1,n('fx')||5.27);
+   const commonAnnual=recurringAnnualExTuition();
+   const commonOne=commonFirstYearOneTime();
+   document.querySelectorAll('#compare-body tr').forEach(tr=>{
+      const monthly=num(tr.querySelector('.cmp-monthly'));
+      const one=num(tr.querySelector('.cmp-one'));
+      const annualExtra=600; // comparison baseline; editable detail remains in main route
+      const y1=monthly*12+annualExtra+one+commonAnnual+commonOne;
+      const y3=(monthly*12+annualExtra+commonAnnual)*3+one+commonOne;
+      tr.querySelector('.cmp-y1').innerHTML='<strong>'+sgd(y1)+'</strong><br><small>'+cny(y1*fx)+'</small>';
+      tr.querySelector('.cmp-y3').innerHTML='<strong>'+sgd(y3)+'</strong><br><small>'+cny(y3*fx)+'</small>';
+   });
+ }
+
+ $('route').addEventListener('change',e=>{
+   const p=presets[e.target.value];
+   $('tuition').value=p.tuition;
+   $('school-annual').value=p.schoolAnnual;
+   $('school-onetime').value=p.schoolOne;
+   $('route-note').textContent=p.note;
+   calc();
+ });
+ $('housing-preset').addEventListener('change',e=>{
+   $('housing').value=e.target.value; calc();
+ });
+ $('parent').addEventListener('change',e=>{
+   $('parent-box').classList.toggle('hidden',!e.target.checked); calc();
+ });
+
+ root.querySelectorAll('input,select').forEach(el=>{
+   el.addEventListener('input',calc);
+   el.addEventListener('change',calc);
+ });
+
+ $('print').addEventListener('click',()=>window.print());
+ $('reset').addEventListener('click',()=>location.reload());
+
+ calc();
+})();
+</script>
+</body>
+</html>
